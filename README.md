@@ -1,2 +1,4 @@
-# dip_cast_controller
-Arduino-based dip-casting apparatus
+# README
+
+To reliably dip cast polymer coatings, an Arduino-based controller was developed to allow control of dip-casting draw speed and mandrel rotation rate.
+
