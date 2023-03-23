@@ -8,7 +8,8 @@
 const uint8_t motorSteps = 200;
 const uint8_t stepPin = 10;
 const uint8_t dirPin = 9;
-const int microStep[8] = {0, 1, 2, 2, 4, 8, 16, 0};
+// Taken from stepper driver spec, where index is bitwise translation of dip switches: S1 is bit 1, S2 is bit 2, S3 is bit 3
+const int microStep[8] = {32, 4, 8, 1, 16, 2, 2, 0};   
 
 //  Global variables, both read from EEPROM stored settings
 int dipSetting;
@@ -37,11 +38,11 @@ void setup()
   
   // Initialize stepper & set spin rate -- spin is in steps per second.
   stepper.begin(stepPin, dirPin);
+
   // ContinuousStepper.spin() takes motor steps / sec as input to set rotational speed
   // Since our driver operates in micro step, our input is:
   // microsteps/sec = motor steps/rev. * rev./min * microsteps/motor step * 1 min / 60 s
   stepper.spin(motorSteps*rpmSetting*microStep[dipSetting]/60);
-
 }
 
 void loop()
