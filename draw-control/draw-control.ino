@@ -1,5 +1,8 @@
+// Built w/ arduino:avr v1.8.6
+// using library StepperDriver v1.3.1, LiquidCrystal 1.0.7 and EEPROM v2.0
+// LCDKeypad is unversioned legacy library provided by Sainsmart
+
 #include <EEPROM.h>
-#include <Wire.h>
 #include <BasicStepperDriver.h>
 #include <LiquidCrystal.h>
 #include <LCDKeypad.h>
@@ -24,9 +27,6 @@ const byte c_up[8] = { B00100, B01110, B10101, B00100, B00100, B00100, B00100, B
 const byte c_down[8] = { B00100, B00100, B00100, B00100, B00100, B10101, B01110, B00100};     // down arrow
 const byte c_right[8] = { B00000, B00100, B00010, B11111, B00010, B00100, B00000, B00000};    // right arrow
 const byte c_left[8] = { B00000, B00100, B01000, B11111, B01000, B00100, B00000, B00000};     // left arrow
-const byte c_select[8] = { B00000, B01110, B11111, B11111, B11111, B11111, B01110, B00000};   // select circle
-const byte c_open_dia[8] = { B00000, B00100, B01010, B10001, B10001, B01010, B00100, B00000};   // select open diamond
-const byte c_closed_dia[8] = { B00000, B00100, B01110, B11111, B11111, B01110, B00100, B00000};   // select closed diamond
 
 // Define stepper; specify steps/rev, direction and step pins
 BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
@@ -47,10 +47,6 @@ int multip;
 
 //String display[2] = {"                ", "                "};
 
-int spd_seq[PROG_STEPS];
-int rpm_seq[PROG_STEPS];
-int dist_seq[PROG_STEPS];
-int wait_seq[PROG_STEPS];
 int auto_rpm;
 
 void setup()
@@ -60,17 +56,14 @@ void setup()
   auto_rpm = EEPROM.read(2);
 
   // Initiate LCD, including some custom characters 
-  lcd.createChar(1,c_select);
   lcd.createChar(2,c_up);
   lcd.createChar(3,c_down);
   lcd.createChar(4,c_right);
   lcd.createChar(5,c_left);
-  lcd.createChar(6,c_open_dia);
-  lcd.createChar(7,c_closed_dia);
   lcd.begin(16, 2);
   
   lcd.clear();
-  lcd.print("firmware: 1.3.0");
+  lcd.print("firmware: 1.3.1");
   delay(500);
 
   lcd.clear();
