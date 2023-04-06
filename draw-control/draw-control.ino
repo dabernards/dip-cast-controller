@@ -64,7 +64,12 @@ void setup()
   
   lcd.clear();
   lcd.print("firmware: 1.3.1");
-  delay(500);
+  long countup = millis();
+  while ((millis()-countup) < 1000) {
+    if (lcd.button() != KEYPAD_NONE) resetStored();
+    delay(50);
+  }
+
 
   lcd.clear();
   lcd.print("get settings...");
@@ -109,6 +114,24 @@ void loop()
     lcd.print("Speed=" + String(rpmToSpeed(stepper.getRPM()),2) + "mm/s    ");
     manualMove();
   }
+}
+
+void resetStored() {
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Clear Settings?");
+  while(lcd.button()!=KEYPAD_NONE);
+  lcd.setCursor(0,1);
+  lcd.print("y-select");
+  while((key_val=waitForKey())==KEYPAD_NONE);
+  lcd.clear();
+  if (key_val==KEYPAD_SELECT) {
+    lcd.print("ok");
+  } else {
+    lcd.print("not reseting");
+  }
+  delay(2000);
+
 }
 
 int dispUpdate(int var_in, String var_name, String var_unit) {
