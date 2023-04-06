@@ -21,7 +21,6 @@ ContinuousStepper stepper;
 void setup()
 {
   // Read EEPROM settings
-  EEPROM.update(0,B100);
   dipSetting = EEPROM.read(0);    // Should add a fail-safe check to ensure dipSetting is valid
   rpmSetting = EEPROM.read(2);
   delay(3000);   // Ensure master has initialized and is read to recieve
