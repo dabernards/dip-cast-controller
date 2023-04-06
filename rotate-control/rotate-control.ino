@@ -5,7 +5,7 @@
 #include <ContinuousStepper.h>
 
 //  Global constants
-const uint8_t motorSteps = 200;
+const int motorSteps = 200;
 const uint8_t stepPin = 10;
 const uint8_t dirPin = 9;
 // Taken from stepper driver spec, where index is bitwise translation of dip switches: S1 is bit 1, S2 is bit 2, S3 is bit 3
@@ -21,6 +21,7 @@ ContinuousStepper stepper;
 void setup()
 {
   // Read EEPROM settings
+  EEPROM.update(0,B100);
   dipSetting = EEPROM.read(0);    // Should add a fail-safe check to ensure dipSetting is valid
   rpmSetting = EEPROM.read(2);
   delay(3000);   // Ensure master has initialized and is read to recieve
@@ -41,8 +42,8 @@ void setup()
 
   // ContinuousStepper.spin() takes motor steps / sec as input to set rotational speed
   // Since our driver operates in micro step, our input is:
-  // microsteps/sec = motor steps/rev. * rev./min * microsteps/motor step * 1 min / 60 s
-  stepper.spin(motorSteps*rpmSetting*microStep[dipSetting]/60);
+  // microsteps/sec = motor steps/rev. * microsteps/motor step * rev./min * 1 min / 60 s
+  stepper.spin((float) motorSteps * microStep[dipSetting] * rpmSetting / 60.0);
 }
 
 void loop()
