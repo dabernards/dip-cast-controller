@@ -70,7 +70,7 @@ void setup()
   lcd.begin(16, 2);
   
   lcd.clear();
-  lcd.print("firmware: 1.2.3");
+  lcd.print("firmware: 1.3.0");
   delay(500);
 
   lcd.clear();
