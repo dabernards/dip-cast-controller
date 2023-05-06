@@ -18,15 +18,22 @@ int rpmSetting;
 //  Define spinner motor
 ContinuousStepper stepper;
 
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
+
 void setup()
 {
   // Read EEPROM settings
   dipSetting = EEPROM.read(0);    // Should add a fail-safe check to ensure dipSetting is valid
   rpmSetting = EEPROM.read(2);
-  delay(3000);   // Ensure master has initialized and is read to recieve
 
   // Wait for RPM setting via serial
   Serial.begin(9600);
+  while(Serial.available()==0); //  Wait for response
+  while(Serial.available()>0) {
+    if (Serial.read() == 0x86) resetFunc();
+  }
+
+  delay(100);
   Serial.write(rpmSetting);  // Send existing setting to master
   delay(100);
   while(Serial.available()==0); //  Wait for response
@@ -44,6 +51,7 @@ void setup()
   // microsteps/sec = motor steps/rev. * microsteps/motor step * rev./min * 1 min / 60 s
   stepper.spin((float) motorSteps * microStep[dipSetting] * rpmSetting / 60.0);
 }
+
 
 void loop()
 {

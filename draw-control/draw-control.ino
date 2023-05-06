@@ -48,6 +48,7 @@ int multip;
 //String display[2] = {"                ", "                "};
 
 int auto_rpm;
+bool resetState = false;
 
 void setup()
 { 
@@ -64,16 +65,17 @@ void setup()
   
   lcd.clear();
   lcd.print("firmware: 1.3.1");
+  Serial.begin(9600);
+
   long countup = millis();
-  while ((millis()-countup) < 1000) {
+  while ((millis()-countup) < 2000) {
     if (lcd.button() != KEYPAD_NONE) resetStored();
     delay(50);
   }
 
-
   lcd.clear();
   lcd.print("get settings...");
-  Serial.begin(9600);
+  Serial.write(0x00);   // Send the all clear to communicate
   while(Serial.available()==0); //  Wait for response
   while(Serial.available()>0) {
     RPM_setting = Serial.read();
@@ -91,6 +93,7 @@ void setup()
   lcd.clear();
 }
 
+void(* resetFunc) (void) = 0; //declare reset function @ address 0
 
 void loop()
 {
@@ -119,14 +122,22 @@ void loop()
 void resetStored() {
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Clear Settings?");
-  while(lcd.button()!=KEYPAD_NONE);
+  lcd.print("Reset menu,");
   lcd.setCursor(0,1);
-  lcd.print("y-select");
+  lcd.print("release key...");
+  while(lcd.button()!=KEYPAD_NONE);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Clear Settings?");
+  lcd.setCursor(0,1);
+  lcd.print("y-select  ");
   while((key_val=waitForKey())==KEYPAD_NONE);
   lcd.clear();
   if (key_val==KEYPAD_SELECT) {
     lcd.print("ok");
+    Serial.write(0x86); // Shutdown signal
+    delay(1000);
+    resetFunc();
   } else {
     lcd.print("not reseting");
   }
