@@ -1,5 +1,6 @@
 // Built w/ arduino:avr v1.8.6
 // using library ContinuousStepper v2.2.0 and EEPROM v2.0
+// Companion for firmware 1.4.0 of draw-control
 
 #include <EEPROM.h>
 #include <ContinuousStepper.h>
@@ -12,9 +13,9 @@ const uint8_t dirPin = 9;
 const int microStep[8] = {32, 4, 8, 1, 16, 2, 2, 0};   
 
 //  Global variables, both read from EEPROM stored settings
-int dipSetting;
-int rpmSetting;
-
+uint8_t dipSetting;
+uint8_t rpmSetting;
+uint8_t buf;
 //  Define spinner motor
 ContinuousStepper stepper;
 
@@ -23,20 +24,24 @@ void(* resetFunc) (void) = 0; //declare reset function @ address 0
 void setup()
 {
   // Read EEPROM settings
-  dipSetting = EEPROM.read(0);    // Should add a fail-safe check to ensure dipSetting is valid
+  dipSetting = EEPROM.read(0);
   rpmSetting = EEPROM.read(2);
 
-  // Wait for RPM setting via serial
-  Serial.begin(9600);
-  while(Serial.available()==0); //  Wait for response
+  Serial.begin(9600);                    // Initiate Serial comms
+  while(Serial.available()==0);           // Listen for draw-control
   while(Serial.available()>0) {
-    if (Serial.read() == 0x86) resetFunc();
+    if ((buf = Serial.read()) != 0xFF) {  //  If not proceed response (0xFF)
+      dipSetting = buf;
+      EEPROM.update(0, dipSetting);       // Update dip settings that were sent
+      delay(100);
+      resetFunc();                        // and reset to sync w/ draw-control
+    }
   }
 
   delay(100);
-  Serial.write(rpmSetting);  // Send existing setting to master
+  Serial.write(rpmSetting);         // Send existing RPM setting to draw-control
   delay(100);
-  while(Serial.available()==0); //  Wait for response
+  while(Serial.available()==0);     //  Wait for response w/ updated setting
   while(Serial.available()>0) {
     rpmSetting = Serial.read();
   }
