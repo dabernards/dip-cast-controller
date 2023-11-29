@@ -14,7 +14,10 @@
 #define PROG_STEPS 3
 
 // 1/4 micro step is preferred generally, S4 is bit 1, S5 is bit 2, S6 is bit 3
-const int MICROSTEP[8] = {0, 4, 2, 16, 1, 8, 2, 0};
+// Sainsmart Stepper Driver constants
+// const int MICROSTEP[8] = {0, 4, 2, 16, 1, 8, 2, 0};
+// Twotrees Stepper Driver constants
+const int microStep[8] = {32, 4, 8, 1, 16, 2, 2, 0};
 const float PRESETS[5] = {0.1, 0.5, 1, 5, 10};
 
 // Custom Characters for LCD
@@ -55,7 +58,7 @@ void setup()
   lcd.begin(16, 2);
   
   lcd.clear();
-  lcd.print("firmware: 1.4.0");
+  lcd.print("firmware: 1.4.1");
 
   Serial.begin(9600);
 
