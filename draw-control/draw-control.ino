@@ -17,7 +17,7 @@
 // Sainsmart Stepper Driver constants
 // const int MICROSTEP[8] = {0, 4, 2, 16, 1, 8, 2, 0};
 // Twotrees Stepper Driver constants
-const int microStep[8] = {32, 4, 8, 1, 16, 2, 2, 0};
+const int MICROSTEP[8] = {32, 4, 8, 1, 16, 2, 2, 0};
 const float PRESETS[5] = {0.1, 0.5, 1, 5, 10};
 
 // Custom Characters for LCD
