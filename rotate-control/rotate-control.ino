@@ -1,6 +1,6 @@
 // Built w/ arduino:avr v1.8.6
 // using library ContinuousStepper v2.2.0 and EEPROM v2.0
-// Companion for firmware 1.4.0 of draw-control
+// Companion for firmware 1.4.1 of draw-control
 
 #include <EEPROM.h>
 #include <ContinuousStepper.h>
