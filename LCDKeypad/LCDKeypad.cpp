@@ -27,10 +27,6 @@ int LCDKeypad::button()
   //values for DFRobot LCDKeypad (roughly 10% over expected analog values)
   static int adc_key_val[5] ={  
     30, 225, 450, 675, 900     };
-
-
-  static int adc_key_val[5] ={  
-    30, 150, 360, 535, 760     };
   int k, input;
   input=analogRead(0);
   for (k = 0; k < NUM_KEYS; k++)
