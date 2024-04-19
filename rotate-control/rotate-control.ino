@@ -15,7 +15,8 @@ const int microStep[8] = {32, 4, 8, 1, 16, 2, 2, 0};
 //  Global variables, both read from EEPROM stored settings
 uint8_t dipSetting;
 uint8_t rpmSetting;
-uint8_t buf;
+uint8_t buf;  // serial buffer
+
 //  Define spinner motor
 ContinuousStepper stepper;
 
@@ -27,7 +28,7 @@ void setup()
   dipSetting = EEPROM.read(0);
   rpmSetting = EEPROM.read(2);
 
-  Serial.begin(9600);                    // Initiate Serial comms
+  Serial.begin(9600);                     // Initiate Serial comms
   while(Serial.available()==0);           // Listen for draw-control
   while(Serial.available()>0) {
     if ((buf = Serial.read()) != 0xFF) {  //  If not proceed response (0xFF)
